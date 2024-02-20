@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <title>Exercício do Pássaro</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    var config = { //criei uma váriavel
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config); //configurei o phaser
+    var passaro;
+
+    function preload() {
+        this.load.image('fundo', 'assets/fundo.png') // carreguei o fundo
+        this.load.spritesheet('passaro', 'assets/passaro_vermelho.png', { frameWidth: 75, frameHeight: 75 }); // carreguei a spritesheet
+    }
+
+    function create() {
+        this.add.image(400, 300, 'fundo').setScale(1.2) // adicionei e determinei o tamanho do fundo
+        passaro = this.add.sprite(100, 300, 'passaro').setScale(1.3); // adicionei e determinei o tamanho do sprite
+
+        this.anims.create({
+            key: 'fly',
+            frames: this.anims.generateFrameNumbers('passaro', {start: 0, end: 7}), // determinei o número de frames da spritesheet para que ela ficasse animada
+            frameRate: 10,
+            repeat: -1
+        });
+
+        passaro.anims.play('fly', true);
+        passaro.ida = true;
+
+        passaro.verticalDirection = 1; // determinei a direção do pássaro
+    }
+
+    function update() {
+        passaro.y += passaro.verticalDirection * 2; // determinei velocidade do pássaro
+
+        
+        if (passaro.y <= 50 || passaro.y >= 550) { //inverte a posição do pássaro quando toca a parede
+            passaro.verticalDirection *= -1;
+        }
+
+        if (passaro.x === 100) {
+            passaro.setFlip(false, false);
+            passaro.ida = true;
+        }
+
+        if(passaro.x < 700 && passaro.ida === true) {
+            console.log("o que acontece?");
+            passaro.x += 5;                                //movimentação do pássaro
+        }
+
+        if(passaro.x === 700) {
+            passaro.setFlip(true, false);
+            passaro.ida = false;
+        }
+
+        if (passaro.x > 100 && passaro.ida === false) {
+            console.log("o que acontece agora");
+            passaro.x -= 5;
+        }
+    }
+</script>
+
+</body>
+</html>
